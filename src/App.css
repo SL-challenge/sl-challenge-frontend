@@ -20,9 +20,35 @@
 
 .App-intro {
   font-size: large;
+  padding: 20px;
+}
+
+.App-intro button{
+  margin: 10px;
 }
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+.card-container {
+  padding: 20px;
+}
+
+.persons-container {
+  height: 500px;
+  overflow: scroll;
+}
+
+.progress-bar {
+  text-align: center;
+  margin: 30px auto;
+}
+
+.letter-container {
+  padding: 0 10px;
+  display: inline-block;
+  width: 30px;
+  border: 1px solid gray;
 }
