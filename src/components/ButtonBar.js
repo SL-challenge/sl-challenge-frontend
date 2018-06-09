@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import FrequencyDialog from './FrequencyDialog';
+import CustomDialog from './CustomDialog';
+import Duplicates from './Duplicates';
 
 export default class ButtonBar extends React.Component {
   constructor(props) {
@@ -8,7 +9,7 @@ export default class ButtonBar extends React.Component {
 
     this.state = {
       clicked: false,
-      open: false,
+      frequencyOpen: false
     }
   }
 
@@ -17,29 +18,32 @@ export default class ButtonBar extends React.Component {
   }
 
   handleClose = () => {
-    this.setState({ open: false });
+    this.setState({ frequencyOpen: false });
   };
 
   handleLetterFrequencyClick = (e) => {
     this.setState((prevState, prevProps) => {
       let people = prevProps.people;
-      let letterHash = {};
+      let data = {};
+
       if (!people) {
-        return { open: true };
+        return { frequencyOpen: true };
       }
+
       people.forEach((person) => {
         person.email_address.split('').forEach((char) => {
-          if (!letterHash[char]) {
-            letterHash[char] = 1;
+          if (!data[char]) {
+            data[char] = 1;
           }
           else {
-            letterHash[char]++
+            data[char]++
           }
         })
       })
+
       return {
-        letterHash,
-        open: true
+        data,
+        frequencyOpen: true
       }
     });
   }
@@ -59,13 +63,17 @@ export default class ButtonBar extends React.Component {
         }
         <div>
           <Button variant="contained" color="primary" onClick={this.handleLetterFrequencyClick}>
-              Get Letter Fequency
+            Get Letter Fequency
           </Button>
-          <FrequencyDialog
-            open={this.state.open}
+          <CustomDialog
+            frequency
+            id={'frequency'}
+            open={this.state.frequencyOpen}
             handleClose={this.handleClose}
-            letterHash={this.state.letterHash}
+            data={this.state.data}
+            title={"Email Address Character Frequency"}
           />
+          <Duplicates people={this.props.people}/>
         </div>
       </div>
     )
