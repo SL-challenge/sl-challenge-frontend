@@ -1,7 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import CustomDialog from './CustomDialog';
-import { min } from 'lodash';
 
 export default class Duplicates extends React.Component {
   constructor(props) {
@@ -90,15 +89,6 @@ export default class Duplicates extends React.Component {
       return 1.0;
     }
 
-    // console.group('edit distances');
-    // console.time('without Matrix');
-    // console.log('without Matrix: ' + this.getEditDistance(longer, shorter));
-    // console.timeEnd('without Matrix')
-    // console.time('with Matrix');
-    // console.log('with Matrix: ' + this.getEditDistanceWithMatrix(longer, shorter));
-    // console.timeEnd('with Matrix');
-    // console.groupEnd();
-
     let startWithoutMatrix = window.performance.now();
     this.getEditDistance(longer, shorter)
     let endWithoutMatrix = window.performance.now();
@@ -122,6 +112,7 @@ export default class Duplicates extends React.Component {
     const costs = [];
     for (let i = 0; i <= emailOne.length; i++) {
       let lastValue = i;
+      console.group('i = ' + i)
 
       for (let j = 0; j <= emailTwo.length; j++) {
         // builds [0,1,2,3,4,...emailTwo.length]
@@ -132,18 +123,31 @@ export default class Duplicates extends React.Component {
           if (j > 0) {
             // the "-1's" are because I used the i=0 loop to build the initial array.
             let newValue = costs[j - 1];
+            console.group('j = ' + j);
+            console.log('newValue: ' + newValue);
 
             if (emailOne.charAt(i - 1) !== emailTwo.charAt(j - 1)) {
+              console.log('character do not match');
               // gets minimum cost at location [i-1][j-1]
-              newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+              newValue = Math.min( Math.min( parseFloat(newValue), parseFloat(lastValue) ), parseFloat(costs[j]) ) + 1;
+              console.log('newValue: ' + newValue);
             }
 
             costs[j - 1] = lastValue;
             lastValue = newValue;
+
+            console.log('costs[j - 1] = lastValue  => costs: ' + costs);
+            console.log('lastValue: ' + lastValue);
+            console.groupEnd();
+          }
+          else {
+            console.log('j = 0');
+            console.log('costs: ' + costs);
           }
         }
       }
 
+      console.groupEnd();
       if (i > 0) {
         costs[emailTwo.length] = lastValue;
       }
@@ -183,7 +187,7 @@ export default class Duplicates extends React.Component {
         const replacementCost = this.getReplacementCost(emailOne, emailTwo, y, x) + minCostsMatrix[y + 1][x + 1];
         const deletionCost = 1 + minCostsMatrix[y + 1][x];
         const isertionCost = 1 + minCostsMatrix[y][x + 1];
-        minCostsMatrix[y][x] = min([replacementCost, deletionCost, isertionCost]);
+        minCostsMatrix[y][x] = Math.min(Math.min(replacementCost, deletionCost), isertionCost);
       }
     }
 

@@ -52,6 +52,10 @@ class App extends Component {
 
       people = prevPeople.concat(nextPeople);
 
+      if (people.length > 500) {
+        console.log(JSON.stringify(people));
+      }
+
       return {
         people,
         nextPage,
